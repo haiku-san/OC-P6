@@ -19,7 +19,7 @@ mongoose.connect(`mongodb+srv://haiku-san:${MONGODB_PASSWORD}@cluster0.bnt0qeh.m
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  .catch((err) => console.log(err));
 
   
 

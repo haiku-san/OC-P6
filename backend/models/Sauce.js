@@ -8,10 +8,10 @@ const sauceSchema = mongoose.Schema({
   mainPepper: { type: String, required: true },
   imageUrl: { type: String, required: true },
   heat: { type: Number, min: 1, max: 10, required: true },
-  likes: { type: Number, required: false },
-  dislikes: { type: Number, required: false },
-  usersLiked: { type: Array },
-  usersDisliked: { type: Array },
+  likes: { type: Number, required: true, default: 0 },
+  dislikes: { type: Number, required: true, default: 0 },
+  usersLiked: [String],
+  usersDisliked: [String],
 });
 
 // manufacturer : String — fabricant de la sauce
