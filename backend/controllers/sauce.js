@@ -55,70 +55,72 @@ exports.modifySauce = (req, res, next) => {
 };
 
 exports.likeSauce = (req, res, next) => {
-   const sauceObject = { ...req.body.sauce };
-   delete sauceObject._userId;
+  //  const sauceObject = { ...req.body.sauce };
+  //  delete sauceObject._userId;
    Sauce.findOne({_id: req.params.id})
        .then((sauce) => {
-        userId = sauce.userId
-        usersLiked = sauce.usersLiked
-        console.log(sauce)
+        let sauceObject = sauce
+        userId = sauceObject.userId
+        usersLiked = sauceObject.usersLiked
+        console.log(sauceObject)
         console.log(userId)
-        console.log(sauce.likes)
+        console.log(sauceObject.likes)
         console.log(req.body)
         if(req.body.like == 1) {
           console.log("on rentre dans la boucle 1")
           console.log(req.body.like)
-          sauce.usersLiked.push(userId)
-          console.log(sauce.usersLiked)
-          Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
-          .then(() => res.status(200).json({message : 'Objet liké !'}))
-          .catch(error => res.status(401).json({ error }));
+          sauceObject.usersLiked.push(userId)
+          sauceObject.likes++
+          console.log(sauceObject.usersLiked)
+          console.log(req.params.id)
+          
+          // console.log(sauceObject)
+
         } 
         if(req.body.like == -1) {
           console.log("on rentre dans la boucle -1")
           console.log(req.body.like)
-          sauce.usersDisliked.push(userId)
-          console.log(sauce.usersDisliked)
-          Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
-          .then(() => res.status(200).json({message : 'Objet disliké !'}))
-          .catch(error => res.status(401).json({ error }));
+          sauceObject.usersDisliked.push(userId)
+          sauceObject.dislikes++
+          console.log(sauceObject.usersDisliked)
+          console.log(sauceObject.dislikes)
+          console.log(sauceObject)
 
-          // sauce.usersDisliked.push(userId)
-          // console.log(usersDisliked)
-          // Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
-          // .then(() => res.status(200).json({message : 'Objet disliké !'}))
-          // .catch(error => res.status(401).json({ error }));
         }
         if(req.body.like == 0) {
           console.log("on rentre dans la boucle 0")
           console.log(req.body.like)
-          console.log(sauce.usersLiked)
-          if(sauce.usersLiked.includes(userId)) {
-            for( let i = 0; i < sauce.usersLiked.length; i++){ 
-              if ( sauce.usersLiked[i] === userId) { 
-                sauce.usersLiked.splice(i, 1); 
+          console.log(sauceObject.usersLiked)
+          if(sauceObject.usersLiked.includes(userId)) {
+            for( let i = 0; i < sauceObject.usersLiked.length; i++){ 
+              if ( sauceObject.usersLiked[i] === userId) { 
+                sauceObject.usersLiked.splice(i, 1); 
               }
             }
           }          
-          console.log(sauce.usersDisliked)
+          console.log(sauceObject.usersDisliked)
 
-          if(sauce.usersDisliked.includes(userId)) {
-            for( let i = 0; i < sauce.usersDisliked.length; i++){ 
-              if ( sauce.usersDisliked[i] === userId) { 
-                sauce.usersDisliked.splice(i, 1); 
+          if(sauceObject.usersDisliked.includes(userId)) {
+            for( let i = 0; i < sauceObject.usersDisliked.length; i++){ 
+              if ( sauceObject.usersDisliked[i] === userId) { 
+                sauceObject.usersDisliked.splice(i, 1); 
               }          
             }          
           }
-          console.log(sauce.usersLiked)
-          console.log(sauce.usersDisliked)
-          Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
-          .then(() => res.status(200).json({message : 'Objet liké !'}))
-          .catch(error => res.status(401).json({ error }));
+          console.log(sauceObject.usersLiked)
+          console.log(sauceObject.usersDisliked)
 
         }
-        // Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
-        // .then(() => res.status(200).json({message : 'Objet liké!'}))
-        // .catch(error => res.status(401).json({ error }));
+        delete sauceObject._id
+        delete sauceObject.__v
+
+        console.log(sauceObject)
+
+        console.log(sauceObject._id)
+      
+        Sauce.updateOne({ _id: req.params.id}, {sauceObject, _id: req.params.id})
+        .then(() => res.status(200).json({message : 'Objet liké !'}))
+        .catch(error => res.status(401).json({ error }));
        })
        .catch((error) => {
            res.status(400).json({ error });
