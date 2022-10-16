@@ -60,7 +60,8 @@ exports.likeSauce = (req, res, next) => {
    Sauce.findOne({_id: req.params.id})
        .then((sauce) => {
         let sauceObject = sauce
-        userId = sauceObject.userId
+        userId = req.body.userId
+        console.log(userId)
         usersLiked = sauceObject.usersLiked
         console.log(sauceObject)
         console.log(userId)
@@ -72,7 +73,6 @@ exports.likeSauce = (req, res, next) => {
           sauceObject.usersLiked.push(userId)
           sauceObject.likes++
           console.log(sauceObject.usersLiked)
-          console.log(req.params.id)
           
           // console.log(sauceObject)
 
@@ -97,6 +97,7 @@ exports.likeSauce = (req, res, next) => {
                 sauceObject.usersLiked.splice(i, 1); 
               }
             }
+            sauceObject.likes--
           }          
           console.log(sauceObject.usersDisliked)
 
@@ -105,21 +106,26 @@ exports.likeSauce = (req, res, next) => {
               if ( sauceObject.usersDisliked[i] === userId) { 
                 sauceObject.usersDisliked.splice(i, 1); 
               }          
-            }          
+            }     
+            sauceObject.dislikes--
+
           }
           console.log(sauceObject.usersLiked)
           console.log(sauceObject.usersDisliked)
 
         }
-        delete sauceObject._id
-        delete sauceObject.__v
+        // delete sauceObject._id
+        // delete sauceObject.__v
 
-        console.log(sauceObject)
+        console.log(sauceObject._doc)
 
-        console.log(sauceObject._id)
+        // console.log(sauceObject._id)
       
-        Sauce.updateOne({ _id: req.params.id}, {sauceObject, _id: req.params.id})
-        .then(() => res.status(200).json({message : 'Objet liké !'}))
+        Sauce.updateOne({ _id: req.params.id}, { ...({likes,dislikes,usersLiked,usersDisliked} = sauceObject._doc)})
+        .then((e) => {
+          console.log(e)
+          return res.status(200).json({message : 'Objet liké !'})
+        })
         .catch(error => res.status(401).json({ error }));
        })
        .catch((error) => {
