@@ -4,7 +4,21 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 
+const passwordValidator = require('password-validator');
+
+let passwordRules = new passwordValidator();
+
+passwordRules
+.is().min(8)                        
+.is().max(100)                        
+.has().uppercase()                             
+.has().lowercase()                             
+.has().digits()      
+.has().symbols()                         
+.has().not().spaces();                  
+
 exports.signup = (req, res, next) => {
+    if(passwordRules.validate(req.body.password)) {
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
       const user = new User({
@@ -16,6 +30,10 @@ exports.signup = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
     })
     .catch(error => res.status(500).json({ error }));
+    } else {
+        return res.status(401).json({ message: "Le mot de passe saisi n'est pas assez complexe"});
+
+    }
 };
 
 exports.login = (req, res, next) => {
