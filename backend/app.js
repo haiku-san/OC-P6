@@ -1,4 +1,4 @@
-
+// Importation des dépendances
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,20 +9,19 @@ const cors = require('cors')
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
-
 const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
+
+// Utilisation de cors
 
 app.use(cors())
 
+// Connexion à la base de données Mongo DB
 
 mongoose.connect(`mongodb+srv://haiku-san:${MONGODB_PASSWORD}@cluster0.bnt0qeh.mongodb.net/?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch((err) => console.log(err));
-
-  
-
 
 app.use(express.json());
 
@@ -36,5 +35,7 @@ app.use((req, res, next) => {
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// Exportation de l'application
 
 module.exports = app;

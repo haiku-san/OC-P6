@@ -1,5 +1,18 @@
+// Importation des dépendances
+
 const Sauce = require('../models/sauce');
 const fs = require('fs');
+
+// * Fonction de création d'une sauce
+// Méthode POST
+// Request body : { sauce: String, image: File }
+// Réponse attendue : { message: String } Verb
+// Capture et enregistre l'image, analyse la sauce transformée en chaîne de caractères 
+// et l'enregistre dans la base de données en définissant correctement son imageUrl. 
+// Initialise les likes et dislikes de la sauce à 0 et les usersLiked et usersDisliked 
+// avec des tableaux vides. Remarquez que le corps de la demande initiale est vide ; 
+// lorsque multer est ajouté, il renvoie une chaîne pour le corps 
+// de la demande en fonction des données soumises avec le fichier.
 
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce);
@@ -16,6 +29,11 @@ exports.createSauce = (req, res, next) => {
   .catch(error => { res.status(400).json( { error })})
 };
 
+// * Fonction de récupération des informations d'une sauce
+// Méthode GET
+// Réponse attendue : Single sauce
+// Renvoie la sauce avec l’_id fourni
+
 exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({
     _id: req.params.id
@@ -31,6 +49,19 @@ exports.getOneSauce = (req, res, next) => {
     }
   );
 };
+
+// * Fonction de modification d'une sauce
+// Méthode PUT 
+// Request body : EITHER Sauce as JSO OR { sauce String image: File }
+// Réponse attendue : { message: String }
+// Met à jour la sauce avec l'_id fourni. Si une image est téléchargée, 
+// elle est capturée et l’imageUrl de la sauce est mise à jour. 
+// Si aucun fichier n'est fourni, les informations sur la sauce se trouvent 
+// directement dans le corps de la requête (req.body.name, req.body.heat, etc.). 
+// Si un fichier est fourni, la sauce transformée en chaîne de caractères se trouve dans req.body.sauce. 
+// Notez que le corps de la demande initiale est vide ; 
+// lorsque multer est ajouté, il renvoie une chaîne du corps 
+// de la demande basée sur les données soumises avec le fichier.
 
 exports.modifySauce = (req, res, next) => {
    const sauceObject = req.file ? {
@@ -54,9 +85,21 @@ exports.modifySauce = (req, res, next) => {
        });
 };
 
+// * Fonction du "like" d'une sauce
+// Méthode POST
+// Request body : { userId: String, like: Number }
+// Réponse attendue : { message: String }
+// Définit le statut « Like » pour l' userId fourni. 
+// Si like = 1, l'utilisateur aime (= like) la sauce. 
+// Si like = 0, l'utilisateur annule son like ou son dislike. 
+// Si like = -1, l'utilisateur n'aime pas (= dislike) la sauce. 
+// L'ID de l'utilisateur doit être ajouté ou retiré du tableau approprié. 
+// Cela permet de garder une trace de leurs préférences et les empêche 
+// de liker ou de ne pas disliker la même sauce plusieurs fois : 
+// un utilisateur ne peut avoir qu'une seule valeur pour chaque sauce. 
+// Le nombre total de « Like » et de « Dislike » est mis à jour à chaque nouvelle notation
+
 exports.likeSauce = (req, res, next) => {
-  //  const sauceObject = { ...req.body.sauce };
-  //  delete sauceObject._userId;
    Sauce.findOne({_id: req.params.id})
        .then((sauce) => {
         let sauceObject = sauce
@@ -74,8 +117,6 @@ exports.likeSauce = (req, res, next) => {
           sauceObject.likes++
           console.log(sauceObject.usersLiked)
           
-          // console.log(sauceObject)
-
         } 
         if(req.body.like == -1) {
           console.log("on rentre dans la boucle -1")
@@ -114,12 +155,9 @@ exports.likeSauce = (req, res, next) => {
           console.log(sauceObject.usersDisliked)
 
         }
-        // delete sauceObject._id
-        // delete sauceObject.__v
 
         console.log(sauceObject._doc)
 
-        // console.log(sauceObject._id)
       
         Sauce.updateOne({ _id: req.params.id}, { ...({likes,dislikes,usersLiked,usersDisliked} = sauceObject._doc)})
         .then((e) => {
@@ -132,6 +170,12 @@ exports.likeSauce = (req, res, next) => {
            res.status(400).json({ error });
        });
 };
+
+
+// * Fonction de récupération de la liste de toutes les sauces
+// Méthode GET
+// Réponse attendue : Array of sauces 
+// Renvoie un tableau de toutes les sauces de la base de données.
 
 exports.getAllSauces = (req, res, next) => {
   Sauce.find().then(
@@ -146,6 +190,11 @@ exports.getAllSauces = (req, res, next) => {
     }
   );
 };
+
+// * Fonction de suppression d'une sauce
+// Méthode DELETE
+// Réponse attendue : { message: String }
+// Supprime la sauce avec l'_id fourni
 
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id})

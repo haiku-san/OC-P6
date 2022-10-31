@@ -1,10 +1,21 @@
+// Importation des dépendances
+
 const bcrypt = require('bcrypt');
-
 const jwt = require('jsonwebtoken');
-
 const User = require('../models/User');
-
 const passwordValidator = require('password-validator');
+
+// * Création des règles de validation du mot de passe
+// Création d'une nouvelle instance de l'objet passwordValidator()
+// à laquelle on applique des contraintes
+// Le moit de passe doit contenir :
+// - au moins 8 caractères
+// - au max 100 caractères
+// - au moins 1 majuscule
+// - au moins 1 minuscule
+// - au moins 1 chiffre
+// - au moins 1 symbole
+// - aucun espace
 
 let passwordRules = new passwordValidator();
 
@@ -16,6 +27,12 @@ passwordRules
 .has().digits()      
 .has().symbols()                         
 .has().not().spaces();                  
+
+// * Fonction de création de nouveau compte
+// Méthode POST
+// Request body : { email: string, password: string }
+// Réponse attendue : { message: string }
+// Hachage du mot de passe de l'utilisateur, ajout de l'utilisateur à la base de données.
 
 exports.signup = (req, res, next) => {
     if(passwordRules.validate(req.body.password)) {
@@ -35,6 +52,14 @@ exports.signup = (req, res, next) => {
 
     }
 };
+
+// * Fonction de connexion à un compte existant
+// Méthode POST
+// Request body : { email: string, password: string }
+// Réponse attendue : { userId: string, token: string }
+// Vérification des informations d'identification de l'utilisateur, 
+// renvoie l _id de l'utilisateur depuis la base de données et un token web JSON signé
+// (contenant également l'_id de l'utilisateur).
 
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
