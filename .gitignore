@@ -104,7 +104,9 @@ dist
 .tern-port
 
 # Node modules
-./backend/node_modules
+./backend/node_modules/
 
 # Images directory
-./backend/images
+./backend/images/
+
+./backend/.env
