@@ -103,35 +103,18 @@ exports.likeSauce = (req, res, next) => {
    Sauce.findOne({_id: req.params.id})
        .then((sauce) => {
         let sauceObject = sauce
-        userId = req.body.userId
-        console.log(userId)
+        userId = req.auth.userId
         usersLiked = sauceObject.usersLiked
-        console.log(sauceObject)
-        console.log(userId)
-        console.log(sauceObject.likes)
-        console.log(req.body)
         if(req.body.like == 1) {
-          console.log("on rentre dans la boucle 1")
-          console.log(req.body.like)
           sauceObject.usersLiked.push(userId)
-          sauceObject.likes++
-          console.log(sauceObject.usersLiked)
-          
+          sauceObject.likes++          
         } 
         if(req.body.like == -1) {
-          console.log("on rentre dans la boucle -1")
-          console.log(req.body.like)
           sauceObject.usersDisliked.push(userId)
           sauceObject.dislikes++
-          console.log(sauceObject.usersDisliked)
-          console.log(sauceObject.dislikes)
-          console.log(sauceObject)
 
         }
         if(req.body.like == 0) {
-          console.log("on rentre dans la boucle 0")
-          console.log(req.body.like)
-          console.log(sauceObject.usersLiked)
           if(sauceObject.usersLiked.includes(userId)) {
             for( let i = 0; i < sauceObject.usersLiked.length; i++){ 
               if ( sauceObject.usersLiked[i] === userId) { 
@@ -140,7 +123,6 @@ exports.likeSauce = (req, res, next) => {
             }
             sauceObject.likes--
           }          
-          console.log(sauceObject.usersDisliked)
 
           if(sauceObject.usersDisliked.includes(userId)) {
             for( let i = 0; i < sauceObject.usersDisliked.length; i++){ 
@@ -151,17 +133,13 @@ exports.likeSauce = (req, res, next) => {
             sauceObject.dislikes--
 
           }
-          console.log(sauceObject.usersLiked)
-          console.log(sauceObject.usersDisliked)
 
         }
 
-        console.log(sauceObject._doc)
 
       
         Sauce.updateOne({ _id: req.params.id}, { ...({likes,dislikes,usersLiked,usersDisliked} = sauceObject._doc)})
         .then((e) => {
-          console.log(e)
           return res.status(200).json({message : 'Objet liké !'})
         })
         .catch(error => res.status(401).json({ error }));

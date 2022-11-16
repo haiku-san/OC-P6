@@ -1,0 +1,21 @@
+{
+  "name": "oc-p6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd backend && npm install && cd .. && cd frontend && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haiku-san/OC-P6.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/haiku-san/OC-P6/issues"
+  },
+  "homepage": "https://github.com/haiku-san/OC-P6#readme"
+}
