@@ -107,6 +107,6 @@ dist
 ./backend/node_modules/
 
 # Images directory
-./backend/images/
+backend/images/
 
-./backend/.env
+backend/.env
