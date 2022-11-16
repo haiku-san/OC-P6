@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const passwordValidator = require('password-validator');
+const dotenv = require("dotenv");
+dotenv.config();
+const RANDOM_TOKEN_KEY = process.env.RANDOM_TOKEN_KEY;
 
 // * Création des règles de validation du mot de passe
 // Création d'une nouvelle instance de l'objet passwordValidator()
@@ -76,7 +79,7 @@ exports.login = (req, res, next) => {
                        userId: user._id,
                        token: jwt.sign(
                         { userId: user._id },
-                        'RANDOM_TOKEN_SECRET',
+                        `${RANDOM_TOKEN_KEY}`,
                         { expiresIn: '24h' }
                         )
                    });

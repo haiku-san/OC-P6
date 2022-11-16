@@ -9,7 +9,7 @@ const cors = require('cors')
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
-const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
+const MONGODB_SERVER = process.env.MONGODB_SERVER;
 
 // Utilisation de cors
 
@@ -17,7 +17,7 @@ app.use(cors())
 
 // Connexion à la base de données Mongo DB
 
-mongoose.connect(`mongodb+srv://haiku-san:${MONGODB_PASSWORD}@cluster0.bnt0qeh.mongodb.net/?retryWrites=true&w=majority`,
+mongoose.connect(`${MONGODB_SERVER}`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
