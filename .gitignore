@@ -103,6 +103,8 @@ dist
 # TernJS port file
 .tern-port
 
+# Node modules
 ./backend/node_modules
 
+# Images directory
 ./backend/images
