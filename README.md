@@ -8,7 +8,7 @@ Projet n°6 de la formation développeur frontend d'Openclassrooms :
 
 Clonez le repo GitHub
 ```bash
-  git clone https://github.com/haiku-san/OC-P6/tree/develop
+  git clone https://github.com/haiku-san/OC-P6/tree/main
 ```
 
 Installez les packages npm
